@@ -1,0 +1,14 @@
+{
+  "name": "chukugi-3d",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "측우기(測雨器) 3D 교육 웹앱 — 설치·측정·서울 강수량 1778~2026",
+  "scripts": {
+    "data": "node tools/build_data.cjs",
+    "build": "node build.mjs",
+    "test": "node --test \"test/*.test.mjs\""
+  },
+  "dependencies": { "three": "0.160.0" },
+  "devDependencies": { "esbuild": "^0.20.0" }
+}

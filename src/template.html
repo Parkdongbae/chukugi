@@ -1,0 +1,113 @@
+<title>측우기 3D</title>
+<meta name="description" content="측우기(測雨器) 3D 교육 웹앱 — 설치 방법, 측정 방법, 서울 강수량 1778~2026">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#ece5d3;--fg:#2b2620;--pn:#fbf7ee;--ac:#9e2f1e;--bd:#d4c7ab;--mut:#6d6253;--sky1:#c9d6dc;--sky2:#ece5d3;--grid:#e3dac6;
+ --c1:#b5612a;--c2:#2f6ea8;--nul:#d9d2c3;
+ --fd:"Gowun Batang","Noto Serif KR",serif;--fb:"Noto Sans KR",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1a17;--fg:#ede6d8;--pn:#27231f;--ac:#d0614a;--bd:#443c33;--mut:#a89c8a;--sky1:#26333b;--sky2:#1c1a17;--grid:#3a342d;--c1:#d27a40;--c2:#4f90dc;--nul:#3d3730;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c1a17;--fg:#ede6d8;--pn:#27231f;--ac:#d0614a;--bd:#443c33;--mut:#a89c8a;--sky1:#26333b;--sky2:#1c1a17;--grid:#3a342d;--c1:#d27a40;--c2:#4f90dc;--nul:#3d3730;color-scheme:dark}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:14px/1.55 var(--fb);display:flex;flex-direction:column;margin:0;padding-inline:16px;box-sizing:border-box}
+header{padding-block:10px 8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+header h1{font:700 20px/1.2 var(--fd);margin:0}
+header .sub{color:var(--mut);font-size:12.5px}
+#tabs{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+button,select,input[type=number]{font:inherit;font-size:13px;background:var(--pn);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:4px 10px;cursor:pointer}
+button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+main{flex:1;min-height:0;display:flex;gap:12px;padding-bottom:12px}
+#cv{flex:1;min-width:0;position:relative;border-radius:12px;overflow:hidden;background:linear-gradient(var(--sky1),var(--sky2))}
+#cv canvas{display:block;touch-action:none;cursor:grab}
+#cap{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:var(--fg);color:var(--bg);border-radius:10px;padding:6px 14px;font-weight:700;font-size:13.5px;max-width:calc(100% - 120px);text-align:center;pointer-events:none}
+#cap:empty{display:none}
+#zoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px}#zoom button{min-width:38px;min-height:34px;font-size:16px}
+#hint{position:absolute;left:12px;bottom:12px;font-size:12px;color:var(--mut);background:var(--pn);border:1px solid var(--bd);border-radius:8px;padding:4px 9px;opacity:.92}
+#dv{flex:1;min-width:0;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+aside{width:360px;flex:none;display:flex;flex-direction:column;gap:8px;min-height:0;overflow-y:auto}
+.box{background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:10px 12px}
+.box>b,.box h2{font:700 15px/1.35 var(--fd);margin:0}
+.box h2 small{font:400 12px var(--fb);color:var(--mut)}
+.d{font-size:13px;margin-top:4px}
+.m{font-size:12px;color:var(--mut);margin-top:6px}
+.row{display:flex;gap:6px;align-items:center;font-size:12.5px;margin-top:8px;flex-wrap:wrap}
+.row input[type=range]{flex:1;min-width:90px;accent-color:var(--ac)}
+.lb{color:var(--mut);min-width:60px}
+.k{font-size:11.5px;color:var(--mut);font-variant-numeric:tabular-nums}
+.as{display:inline-block;font-size:10.5px;border:1px solid var(--mut);color:var(--mut);border-radius:4px;padding:0 4px;margin-left:4px;vertical-align:1px}
+#steps{display:flex;flex-direction:column;gap:3px;margin-top:6px}
+#steps button{text-align:left;font-size:12.5px;padding:4px 8px}
+.reads{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin-top:8px;font-size:12.5px}
+.reads b{float:right;font-variant-numeric:tabular-nums}
+.big{font:700 26px/1.2 var(--fd);color:var(--ac);margin-top:6px}
+.chart{background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;position:relative}
+.chart h3{margin:0;font:700 15px/1.35 var(--fd)}
+.chart .sub{font-size:12px;color:var(--mut);margin:2px 0 4px}
+.chart svg{width:100%;height:auto;display:block;overflow:visible}
+.chart svg text{fill:var(--mut);font:11px var(--fb)}
+.chart svg .lab{fill:var(--fg);font-weight:700}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin-top:2px}
+.legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.legend i.sq{width:11px;height:11px;border-radius:3px}
+.tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);border-radius:8px;padding:5px 9px;font-size:12px;line-height:1.45;white-space:nowrap;z-index:5;box-shadow:0 2px 8px #0003}
+.tip[hidden]{display:none}
+table.t{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}
+table.t th,table.t td{border-bottom:1px solid var(--bd);padding:3px 5px;text-align:right}
+table.t th:first-child,table.t td:first-child{text-align:left}
+.tw{max-height:280px;overflow:auto;margin-top:6px}
+details summary{cursor:pointer;font-weight:700;font-size:13px}
+#quiz{position:fixed;inset:0;background:#0007;display:grid;place-items:center;z-index:20;padding:16px}
+#quiz[hidden]{display:none}
+#quiz .box{max-width:520px;width:100%}
+#qopts{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+#qopts button{text-align:left}
+#qopts button.ok{background:#3d7a4a;border-color:#3d7a4a;color:#fff}
+#qopts button.no{background:var(--ac);border-color:var(--ac);color:#fff}
+@media (max-width:860px){main{flex-direction:column}#cv{min-height:58vh;flex:none}aside{width:auto;overflow:visible}#dv{overflow:visible}body{height:auto}html,body{height:auto}}
+</style>
+<header><h1>측우기(測雨器) 3D</h1><span class="sub">비의 양을 잰 조선의 그릇 · 서울 강수량 1778–2026</span>
+ <nav id="tabs" aria-label="메뉴"><button data-tab="install" class="on">설치 방법</button><button data-tab="measure">측정 방법</button><button data-tab="data">강수량 자료</button><button id="quizb">퀴즈</button></nav>
+</header>
+<main>
+ <div id="cv"><div id="cap"></div><div id="zoom"><button id="zi" aria-label="가까이">＋</button><button id="zo" aria-label="멀리">－</button><button id="zr" aria-label="처음 시점">⟲</button></div><div id="hint">끌어서 돌리기 · 휠로 확대</div></div>
+ <div id="dv" hidden></div>
+ <aside>
+  <div class="box" id="installbox">
+   <h2 id="iT"></h2><div class="d" id="iD"></div>
+   <div class="row"><button id="iPrev">◀ 이전</button><button id="iPlay">▶ 차례로 보기</button><button id="iNext">다음 ▶</button></div>
+   <div id="steps"></div>
+  </div>
+  <div class="box" id="measurebox" hidden>
+   <h2>측정 방법 <small>비가 그친 뒤 주척으로 깊이를 잰다</small></h2>
+   <div class="row"><span class="lb">내린 비</span><input id="rainS" type="range" min="2" max="300" step="2" value="60" aria-label="내린 비(mm)"><span id="rainV" class="k">60mm</span></div>
+   <div class="row"><button id="mPlay">▶ 재생</button><button id="mReset">⟲ 처음</button><input id="mT" type="range" min="0" max="25" step="0.05" value="0" aria-label="장면 시간"></div>
+   <div class="row"><label><input id="cut" type="checkbox" checked> 반 잘라 속 보기</label><label><input id="cmp" type="checkbox"> 넓이가 다른 그릇과 비교</label></div>
+   <div class="reads"><div>물 깊이 <b id="rD">0mm</b></div><div>받은 물 <b id="rV">0mL</b></div><div>주척 읽기 <b id="rK">—</b></div><div>기록 <b id="rH">—</b></div></div>
+   <div class="big" id="rec"></div>
+  </div>
+  <div class="box" id="sciencebox" hidden>
+   <b>왜 깊이만 재면 될까?</b>
+   <div class="d">빗물이 들어오는 입구 넓이를 A라 하면, 비 h mm가 오면 받은 물의 부피는 h × A입니다. 입구와 몸통 넓이가 같으므로 물 깊이 = 부피 ÷ A = h. <b>그릇이 넓든 좁든 깊이는 같습니다.</b> 「넓이가 다른 그릇과 비교」를 켜 보세요.</div>
+   <div class="m">단, 입구가 몸통보다 넓거나 좁으면 깊이가 달라집니다 — 측우기를 위아래 굵기가 같은 원통으로 만든 까닭입니다. 증발·튀는 물·바람이 오차를 만듭니다. 측우기는 눈을 녹여 재지 않았으므로 겨울 강수량은 적게 기록되었습니다(Lee 외 2024).</div>
+  </div>
+  <div class="box" id="yearbox" hidden></div>
+  <div class="box" id="statbox" hidden></div>
+  <details class="box" id="srcbox"><summary>치수와 자료의 출처</summary>
+   <div class="tw"><table class="t">
+    <tr><th>항목</th><th>값</th></tr>
+    <tr><td>측우기 높이·지름</td><td>32cm · 바깥 15 / 안 14cm, 3단</td></tr>
+    <tr><td>세종 규격(1442)</td><td>높이 1척 5촌 · 지름 7촌</td></tr>
+    <tr><td>측우대(1770)</td><td>높이 46cm · 너비 37cm(앞·옆 같다고 봄<span class="as">가정</span>)</td></tr>
+    <tr><td>측우대 홈</td><td>지름 16cm · 깊이 4.3cm</td></tr>
+    <tr><td>마디 띠 두께·폭</td><td>사진 비율<span class="as">가정</span></td></tr>
+    <tr><td>주척</td><td>1척 = 200mm, 1푼 = 2mm</td></tr>
+   </table></div>
+   <div class="m">모형: 측우대는 대구 경상감영 측우대(乾隆庚寅五月造, 보물), 측우기는 공주 충청감영 측우기(1837, 국보) 모양을 따랐습니다. 창덕궁 측우대(1782)는 높이 30.3cm, 45.3×45.5cm입니다.<br>
+   자료: Lee, Shin & Hong (2024) 「Precipitation data in Seoul, Korea during 1778–1907」, <i>Scientific Data</i> 11:566 (승정원일기·일성록 복원) · 기상청 기상자료개방포털 서울(108) 일 강수량 1907.10–2026.11.7 · <a href="https://encykorea.aks.ac.kr/Article/E0007902" target="_blank" rel="noopener">한국민족문화대백과 「공주 충청감영 측우기」</a> · <a href="https://encykorea.aks.ac.kr/Article/E0014106" target="_blank" rel="noopener">「대구 경상감영 측우대」</a><br>
+   이음: 1907년 9월까지 조선 자료, 10월부터 기상청 자료. 1950년 9월~1952년 8월 일부 달은 전쟁으로 빠져 그 해 연 강수량은 비워 두었습니다.</div>
+  </details>
+ </aside>
+</main>
+<div id="quiz" hidden role="dialog" aria-modal="true" aria-labelledby="qq"><div class="box"><div class="k" id="qn"></div><h2 id="qq"></h2><div id="qopts"></div><div class="d" id="qe"></div><div class="row"><button id="qnext">다음</button><button id="qclose">닫기</button></div></div></div>
+<script>%%SCRIPT%%</script>
