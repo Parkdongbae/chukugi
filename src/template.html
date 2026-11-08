@@ -3,10 +3,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
 :root{--bg:#ece5d3;--fg:#2b2620;--pn:#fbf7ee;--ac:#9e2f1e;--bd:#d4c7ab;--mut:#6d6253;--sky1:#c9d6dc;--sky2:#ece5d3;--grid:#e3dac6;
- --c1:#b5612a;--c2:#2f6ea8;--nul:#d9d2c3;
+ --c1:#b5612a;--c3:#1f9a8a;--c2:#2f6ea8;--nul:#d9d2c3;
  --fd:"Gowun Batang","Noto Serif KR",serif;--fb:"Noto Sans KR",system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1a17;--fg:#ede6d8;--pn:#27231f;--ac:#d0614a;--bd:#443c33;--mut:#a89c8a;--sky1:#26333b;--sky2:#1c1a17;--grid:#3a342d;--c1:#d27a40;--c2:#4f90dc;--nul:#3d3730;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#1c1a17;--fg:#ede6d8;--pn:#27231f;--ac:#d0614a;--bd:#443c33;--mut:#a89c8a;--sky1:#26333b;--sky2:#1c1a17;--grid:#3a342d;--c1:#d27a40;--c2:#4f90dc;--nul:#3d3730;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1a17;--fg:#ede6d8;--pn:#27231f;--ac:#d0614a;--bd:#443c33;--mut:#a89c8a;--sky1:#26333b;--sky2:#1c1a17;--grid:#3a342d;--c1:#d27a40;--c3:#2aaa8c;--c2:#5590e0;--nul:#3d3730;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c1a17;--fg:#ede6d8;--pn:#27231f;--ac:#d0614a;--bd:#443c33;--mut:#a89c8a;--sky1:#26333b;--sky2:#1c1a17;--grid:#3a342d;--c1:#d27a40;--c3:#2aaa8c;--c2:#5590e0;--nul:#3d3730;color-scheme:dark}
 [hidden]{display:none!important}
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font:14px/1.55 var(--fb);display:flex;flex-direction:column;margin:0;padding-inline:16px;box-sizing:border-box}
@@ -50,6 +50,8 @@ aside{width:360px;flex:none;display:flex;flex-direction:column;gap:8px;min-heigh
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin-top:2px}
 .legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:5px;vertical-align:middle}
 .legend i.sq{width:11px;height:11px;border-radius:3px}
+.src{font-size:11px;color:var(--mut);margin-top:6px;line-height:1.5}.src a{color:inherit}
+i.sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px}
 .tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);border-radius:8px;padding:5px 9px;font-size:12px;line-height:1.45;white-space:nowrap;z-index:5;box-shadow:0 2px 8px #0003}
 .tip[hidden]{display:none}
 table.t{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}
@@ -98,13 +100,14 @@ details summary{cursor:pointer;font-weight:700;font-size:13px}
     <tr><th>항목</th><th>값</th></tr>
     <tr><td>측우기 높이·지름</td><td>32cm · 바깥 15 / 안 14cm, 3단</td></tr>
     <tr><td>세종 규격(1442)</td><td>높이 1척 5촌 · 지름 7촌</td></tr>
-    <tr><td>측우대(1770)</td><td>높이 46cm · 너비 37cm(앞·옆 같다고 봄<span class="as">가정</span>)</td></tr>
-    <tr><td>측우대 홈</td><td>지름 16cm · 깊이 4.3cm</td></tr>
+    <tr><td>측우대(창덕궁, 1782)</td><td>높이 30.3cm · 가로 45.3 · 세로 45.5cm, 대리석</td></tr>
+    <tr><td>측우대 홈</td><td>지름 16cm · 깊이 4.3cm(대구 측우대 값<span class="as">가정</span>)</td></tr>
+    <tr><td>측우기 명문</td><td>錦營 測雨器 高一尺五寸 徑七寸 道光丁酉製 重十一斤</td></tr>
     <tr><td>마디 띠 두께·폭</td><td>사진 비율<span class="as">가정</span></td></tr>
     <tr><td>주척</td><td>1척 = 200mm, 1푼 = 2mm</td></tr>
    </table></div>
-   <div class="m">모형: 측우대는 대구 경상감영 측우대(乾隆庚寅五月造, 보물), 측우기는 공주 충청감영 측우기(1837, 국보) 모양을 따랐습니다. 창덕궁 측우대(1782)는 높이 30.3cm, 45.3×45.5cm입니다.<br>
-   자료: Lee, Shin & Hong (2024) 「Precipitation data in Seoul, Korea during 1778–1907」, <i>Scientific Data</i> 11:566 (승정원일기·일성록 복원) · 기상청 기상자료개방포털 서울(108) 일 강수량 1907.10–2026.11.7 · <a href="https://encykorea.aks.ac.kr/Article/E0007902" target="_blank" rel="noopener">한국민족문화대백과 「공주 충청감영 측우기」</a> · <a href="https://encykorea.aks.ac.kr/Article/E0014106" target="_blank" rel="noopener">「대구 경상감영 측우대」</a><br>
+   <div class="m">모형: 측우대는 창덕궁 측우대(정조 6년 1782, 국립고궁박물관), 측우기는 공주 충청감영 측우기(1837, 국보) 모양과 명문을 따랐습니다. 측우대 겉면 명문은 확인한 자료가 없어 새기지 않았습니다.<br>
+   강수량 자료: Lee, Shin &amp; Hong (2024) 「Precipitation data in Seoul, Korea during 1778–1907」, <i>Scientific Data</i> 11:566, 자료 <a href="https://zenodo.org/records/11076768" target="_blank" rel="noopener">Zenodo doi:10.5281/zenodo.11076768</a> (승정원일기·일성록 복원) · <a href="https://data.kma.go.kr/cmmn/main.do" target="_blank" rel="noopener">기상청 기상자료개방포털</a> 서울(108) 일 강수량 1907.10–2026.11.7 · <a href="https://encykorea.aks.ac.kr/Article/E0007902" target="_blank" rel="noopener">한국민족문화대백과 「공주 충청감영 측우기」</a> · <a href="https://encykorea.aks.ac.kr/Article/E0014106" target="_blank" rel="noopener">「대구 경상감영 측우대」</a><br>
    이음: 1907년 9월까지 조선 자료, 10월부터 기상청 자료. 1950년 9월~1952년 8월 일부 달은 전쟁으로 빠져 그 해 연 강수량은 비워 두었습니다.</div>
   </details>
  </aside>

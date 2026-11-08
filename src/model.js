@@ -9,9 +9,10 @@ function canvasTex(w, h, draw) {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 }
 // 화강암 결: 밝은 바탕 + 검고 흰 점
-function granite(g, w, h, seed = 1) {
+function granite(g, w, h, seed = 1, marble = false) {
   let s = seed * 9301; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
-  g.fillStyle = '#cfc6b0'; g.fillRect(0, 0, w, h);
+  g.fillStyle = marble ? '#e4e0d6' : '#cfc6b0'; g.fillRect(0, 0, w, h);
+  if (marble) { g.globalAlpha = .18; g.strokeStyle = '#8f8a80'; for (let i = 0; i < 9; i++) { g.lineWidth = .6 + rnd() * 1.6; g.beginPath(); let x = rnd() * w, y = 0; g.moveTo(x, y); while (y < h) { x += (rnd() - .5) * 40; y += 20 + rnd() * 30; g.lineTo(x, y); } g.stroke(); } g.globalAlpha = 1; for (let i = 0; i < w * h / 60; i++) { g.fillStyle = rnd() < .5 ? '#cbc6ba' : '#f3f0e8'; g.globalAlpha = .3; g.fillRect(rnd() * w, rnd() * h, 2, 2); } g.globalAlpha = 1; return; }
   for (let i = 0; i < w * h / 18; i++) {
     const r = rnd(); g.fillStyle = r < .25 ? '#6f6656' : r < .5 ? '#e9e2d0' : r < .6 ? '#b39a6a' : '#a8a08c';
     g.globalAlpha = .35 + rnd() * .5; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2.5, 1 + rnd() * 2.5);
@@ -70,19 +71,20 @@ export function buildWorld(scene) {
 
   // 측우대: 상자 + 윗면 홈(어두운 원 + 안쪽 벽)
   const sw = M(STAND.w), sh = M(STAND.h), hr = M(STAND.holeR), hd = M(STAND.holeD);
-  const face = (txt) => new THREE.MeshStandardMaterial({ roughness: .92, map: canvasTex(512, 640, (g, w, h) => { granite(g, w, h, txt.length + 2); if (txt === 'front') carve(g, '測雨臺', w * .55, h * .2, 128, 150); if (txt === 'side') carve(g, '乾隆庚寅五月造', w * .5, h * .1, 62, 76); }) });
+  // 창덕궁 측우대(대리석). 겉면 명문은 확인한 자료가 없어 새기지 않음
+  const face = (txt) => new THREE.MeshStandardMaterial({ roughness: .55, map: canvasTex(512, 360, (g, w, h) => granite(g, w, h, txt.length + 2, true)) });
   const top = new THREE.MeshStandardMaterial({ roughness: .92, map: canvasTex(512, 512, (g, w, h) => {
-    granite(g, w, h, 9); g.fillStyle = '#3b352c'; g.beginPath(); g.arc(w / 2, h / 2, w * STAND.holeR / STAND.w, 0, 7); g.fill();
+    granite(g, w, h, 9, true); g.fillStyle = '#3b352c'; g.beginPath(); g.arc(w / 2, h / 2, w * STAND.holeR / STAND.w, 0, 7); g.fill();
   }) });
   const plain = face('plain');
-  const stand = new THREE.Mesh(new THREE.BoxGeometry(sw, sh, sw), [face('side2'), face('side'), top, plain, face('front'), plain]);
+  const stand = new THREE.Mesh(new THREE.BoxGeometry(sw, sh, M(STAND.d)), [face('a'), face('bb'), top, plain, face('ccc'), plain]);
   stand.position.y = base + sh / 2; stand.castShadow = stand.receiveShadow = true;
   const standG = new THREE.Group(); standG.add(stand); scene.add(standG); W.stand = standG;
   const holeWall = new THREE.Mesh(new THREE.CylinderGeometry(hr, hr, hd, 48, 1, true), new THREE.MeshStandardMaterial({ color: 0x5a5244, side: THREE.BackSide, roughness: 1 }));
   holeWall.position.y = base + sh - hd / 2 + .0005; standG.add(holeWall);
   W.standTop = base + sh;
   // 반 자른 단면(측정 탭): 돌 단면 + 홈 자리
-  const capT = canvasTex(512, 640, (g, w, h) => { granite(g, w, h, 21); g.fillStyle = 'rgba(0,0,0,.12)'; g.fillRect(0, 0, w, h);
+  const capT = canvasTex(512, 640, (g, w, h) => { granite(g, w, h, 21, true); g.fillStyle = 'rgba(0,0,0,.08)'; g.fillRect(0, 0, w, h);
     const hw = w * 2 * STAND.holeR / STAND.w, hh = h * STAND.holeD / STAND.h; g.clearRect(w / 2 - hw / 2, 0, hw, hh); });
   const cap = new THREE.Mesh(new THREE.PlaneGeometry(sw, sh), new THREE.MeshStandardMaterial({ map: capT, transparent: true, alphaTest: .5, roughness: .95, side: THREE.DoubleSide }));
   cap.position.set(0, base + sh / 2, 0); cap.visible = false; standG.add(cap); W.cap = cap; W.standMats = stand.material.concat(holeWall.material);
@@ -104,6 +106,15 @@ export function buildWorld(scene) {
     const bp = [new THREE.Vector2(ro, seg - band), new THREE.Vector2(ro + bandT, seg - band + M(2)), new THREE.Vector2(ro + bandT, seg - M(2)), new THREE.Vector2(ro, seg)];
     const b = new THREE.Mesh(new THREE.LatheGeometry(bp, 64), bronze); b.castShadow = true; g.add(b);
     if (i === 0) { const b0 = new THREE.Mesh(new THREE.LatheGeometry([new THREE.Vector2(ro, 0), new THREE.Vector2(ro + bandT * .6, M(2)), new THREE.Vector2(ro + bandT * .6, band), new THREE.Vector2(ro, band + M(2))], 64), bronze); g.add(b0); }
+    if (i === 1) {   // 명문: 錦營 測雨器 高一尺五寸 徑七寸 道光丁酉製 重十一斤 (공주 충청감영 측우기, 세로쓰기 오른쪽→왼쪽)
+      const cols = ['錦營', '測雨器', '高一尺五寸', '徑七寸', '道光丁酉製', '重十一斤'];
+      const tex = canvasTex(512, 256, (c, w, h) => { c.textAlign = 'center'; c.textBaseline = 'top'; c.font = '700 30px "Noto Serif KR","Batang",serif';
+        cols.forEach((t, k) => { const x = w - 40 - k * 80, y0 = k === 0 ? 14 : k % 2 ? 46 : 30; [...t].forEach((ch, n) => { c.fillStyle = 'rgba(0,0,0,.55)'; c.fillText(ch, x + 1, y0 + n * 36 + 1); c.fillStyle = 'rgba(214,200,160,.85)'; c.fillText(ch, x, y0 + n * 36); }); }); });
+      // 카메라 쪽(−x, +z 사이)에 글씨가 오도록 둘레 일부에만 붙임
+      const arc = 1.9, mid = -.55;
+      const ins = new THREE.Mesh(new THREE.CylinderGeometry(ro + M(.4), ro + M(.4), seg - band - M(14), 48, 1, true, mid - arc / 2, arc), new THREE.MeshStandardMaterial({ map: tex, transparent: true, metalness: .3, roughness: .5, side: THREE.FrontSide }));
+      ins.position.y = (seg - band) / 2 + M(2); g.add(ins); W.inscription = ins;
+    }
     g.userData.home = gaugeBottom + i * seg;
     g.position.y = g.userData.home; scene.add(g); W.parts.push(g);
   }

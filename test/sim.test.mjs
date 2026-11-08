@@ -23,7 +23,7 @@ test('평년(1991~2020) 1418mm, 결측 해는 null', () => {
   assert.equal(S.annual(ROWS).find(p => p.y === 1951).v, null);
   assert.equal(S.annual(ROWS).find(p => p.y === 2026).v, null);
 });
-test('가장 비가 많은 달은 두 시대 모두 7월', () => {
+test('가장 비가 많은 달은 세 시대 모두 7월', () => {
   for (const [a, b] of Object.values(S.ERAS)) { const c = S.climatology(ROWS, a, b); assert.equal(c.indexOf(Math.max(...c)), 6); }
 });
 test('측정 장면: 물이 차고, 자가 들어갔다 나옴', () => {

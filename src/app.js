@@ -33,10 +33,10 @@ function view(pos, target, dur = 1) {
 }
 const VIEWS = {
   site: [[-1.5, 6.5, 9], [0, .6, -1.5]],
-  near: [[-1.1, .95, 1.5], [0, .42, 0]],
-  gauge: [[-.55, .95, .8], [0, .62, 0]],
-  measure: [[-.62, .9, 1.05], [.05, .58, 0]],
-  cmp: [[-.35, 1.35, 2.9], [.08, .35, .1]],
+  near: [[-1.2, .85, 1.55], [0, .3, 0]],
+  gauge: [[-.6, .8, .85], [0, .48, 0]],
+  measure: [[-.62, .78, 1.05], [.05, .44, 0]],
+  cmp: [[-.35, 1.2, 2.9], [.08, .28, .1]],
 };
 let homeView = VIEWS.near;
 $('zi').onclick = () => { const d = cam.position.clone().sub(ctl.target).multiplyScalar(.8); cam.position.copy(ctl.target).add(d); };
@@ -49,7 +49,7 @@ function setTags(list) { tags.clear(); for (const [t, p, c] of list) { const s =
 
 // 반 잘라 보기
 const clip = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
-function setCut(on) { for (const m of [W.bronze, ...W.standMats]) { m.clippingPlanes = on ? [clip] : []; m.needsUpdate = true; } W.cap.visible = on; }
+function setCut(on) { for (const m of [W.bronze, W.inscription.material, ...W.standMats]) { m.clippingPlanes = on ? [clip] : []; m.needsUpdate = true; } W.cap.visible = on; }
 
 // ---------------- 설치 방법 ----------------
 let step = 0, stepT = 1, iPlaying = false, iTimer = 0;
@@ -64,12 +64,12 @@ function setStep(i) {
   const top = W.standTop;
   setTags(s.key === 'site' ? [['처마 물이 떨어짐 ✕', [-3.6, 3.4, -1.6], '#9e2f1e'], ['나뭇가지 물·바람 ✕', [3.4, 3.8, -2], '#9e2f1e'], ['트인 마당 ○', [0, 1.1, 0], '#3d7a4a']]
     : s.key === 'base' ? [['박석을 깔고 다짐', [0, .2, .55]]]
-    : s.key === 'stand' ? [['측우대 46cm', [.32, .3, .2]], ['수평', [0, top + .08, 0]]]
-    : s.key === 'hole' ? [['홈 지름 16cm · 깊이 4.3cm', [0, top + .12, 0]]]
+    : s.key === 'stand' ? [['측우대 30.3cm (대리석)', [.36, .22, .2]], ['수평', [0, top + .08, 0]]]
+    : s.key === 'hole' ? [['홈 (지름 16cm · 깊이 4.3cm, 가정)', [0, top + .12, 0]]]
     : s.key === 'g1' ? [['하단(바닥 막힘)', [.2, top + .08, 0]]]
-    : s.key === 'g2' ? [['중단', [.2, top + .17, 0]]]
+    : s.key === 'g2' ? [['중단 · 명문 錦營 測雨器…', [.24, top + .17, 0]]]
     : s.key === 'g3' ? [['상단 · 높이 32cm', [.22, top + .26, 0]], ['안지름 14cm', [0, W.gaugeTop + .06, 0]]]
-    : [['주척 1척 ≈ 20cm', [.38, .5, .15]]]);
+    : [["주척 1척 ≈ 20cm", [.2, .52, .2]]]);
 }
 function installFrame(dt) {
   stepT = Math.min(1, stepT + dt / 1.1);
