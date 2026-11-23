@@ -24,7 +24,7 @@ export function canvasTex(w, h, draw, rep) {
 }
 const rnd = seed => { let s = seed * 9301 + 49297; return () => (s = (s * 16807) % 2147483647) / 2147483647; };
 
-// opts: { yard: 흙 마당 반지름(m), far: 가장 먼 거리, target/pos: 처음 시점, quality, theme, labels, reducedMotion }
+// opts: { yard: 흙 마당 반지름(m), far: 가장 먼 거리, target/pos: 처음 시점, quality, theme, labels, reducedMotion, maxDt: 프레임 시간 상한(기본 0.05초) }
 export function createStage(box, opts = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: !!opts.preserve });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -32,7 +32,7 @@ export function createStage(box, opts = {}) {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   box.prepend(renderer.domElement);
   const scene = new THREE.Scene();
-  const far = opts.far ?? 8000;
+  const far = opts.far ?? 8000, maxDt = opts.maxDt ?? .05;
   const cam = new THREE.PerspectiveCamera(38, 1, .05, far);
   const ctl = new OrbitControls(cam, renderer.domElement);
   Object.assign(ctl, { enableDamping: true, dampingFactor: .08, maxPolarAngle: Math.PI * .49, minDistance: .25, maxDistance: far * .4, zoomSpeed: .9 });
@@ -157,7 +157,7 @@ export function createStage(box, opts = {}) {
   function start() {
     resize();
     renderer.setAnimationLoop(() => {
-      const raw = clock.getDelta(), dt = Math.min(.05, raw);
+      const raw = clock.getDelta(), dt = Math.min(maxDt, raw);
       if (camAnim) { camAnim.u = Math.min(1, camAnim.u + dt / camAnim.dur); const e = camAnim.u * camAnim.u * (3 - 2 * camAnim.u);
         cam.position.lerpVectors(camAnim.p0, camAnim.p1, e); ctl.target.lerpVectors(camAnim.t0, camAnim.t1, e); if (camAnim.u >= 1) camAnim = null; }
       for (const f of frames) f(dt);

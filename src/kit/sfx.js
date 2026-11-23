@@ -42,6 +42,12 @@ export function initSfx(getSettings) {
     ok: () => { tone(660, .12, { type: 'triangle', vol: .2 }); tone(990, .22, { type: 'triangle', vol: .2, at: .1 }); },
     no: () => tone(220, .28, { type: 'sawtooth', f2: 150, vol: .1 }),
     badge: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .28, { type: 'triangle', vol: .18, at: i * .09 })),
+    reel: () => noise(.07, { f: 320 + Math.random() * 380, q: 6, vol: .16, type: 'bandpass', attack: .002 }),     // 얼레 감는 삐걱(짧은 잡음 딸깍)
+    reelLow: () => noise(.07, { f: 300 + Math.random() * 300, q: 6, vol: .16, type: 'bandpass', attack: .002 }),  // 손바퀴 감는 삐걱(조금 낮게)
+    settle: () => tone(70, .38, { f2: 34, vol: .6 }),                                                                // 무거운 돌이 내려앉는 「쿵」
+    win: () => [523, 659, 784].forEach((f, i) => tone(f, .14, { vol: .2, at: i * .1 })),                            // 미션 성공
+    warn: () => { tone(440, .12, { vol: .14 }); tone(440, .12, { vol: .14, at: .18 }); },                            // 기울기·넘어짐 경고
+    topple: () => { tone(70, .38, { f2: 34, vol: .6 }); tone(140, .3, { type: 'sawtooth', f2: 210, vol: .06, at: .05 }); tone(130, .3, { type: 'sawtooth', f2: 190, vol: .06, at: .4 }); },
   };
   return {
     play(name) {

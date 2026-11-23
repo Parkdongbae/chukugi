@@ -167,6 +167,8 @@ dialog.k-dlg::backdrop{background:#0009}
 [data-motion=reduced] *{animation-duration:.01s!important;transition-duration:.01s!important}
 
 /* ---------- 좁은 화면 ---------- */
+@media (max-width:1280px){.k-brand span{display:none}}
+@media (max-width:1100px){.k-top{gap:.5rem}.k-nav{gap:.25rem}.k-nav button{padding-right:.625rem;gap:.375rem}}
 @media (max-width:900px){
   .k-top{flex-wrap:wrap;padding:.375rem .625rem;gap:.375rem}
   .k-brand span{display:none}
